@@ -65,27 +65,34 @@ $process_chunk = function (string $file, int $chunk_start, int $chunk_end): arra
     $stations = [];
     $fp = fopen($file, 'rb');
     fseek($fp, $chunk_start);
-    while ($chunk_start < $chunk_end) {
-        $city = stream_get_line($fp, 99, ';');
-        $temp = stream_get_line($fp, 99, "\n");
-        $chunk_start += strlen($city) + strlen($temp) + 2;
-        $temp = (float)$temp;
-        $station = &$stations[$city];
-        if ($station !== NULL) {
-            $station[3] ++;
-            $station[2] += $temp;
-            if ($temp < $station[0]) {
-                $station[0] = $temp;
-            } elseif ($temp > $station[1]) {
-                $station[1] = $temp;
+    $chunk_length = $chunk_end - $chunk_start;
+    while ($chunk_length > 0) {
+        $buffer = fread($fp, 1000000);
+        $buffer .= stream_get_line($fp, 200, "\n");
+        $chunk_length -= strlen($buffer);
+
+        $tok = strtok($buffer, ';');
+        while ($city = $tok) {
+            $temp = floatval($tok = strtok( "\n" ));
+            $tok = strtok(';');
+
+            $station = &$stations[$city];
+            if ($station !== NULL) {
+                $station[3] ++;
+                $station[2] += $temp;
+                if ($temp < $station[0]) {
+                    $station[0] = $temp;
+                } elseif ($temp > $station[1]) {
+                    $station[1] = $temp;
+                }
+            } else {
+                $station = [
+                    $temp,
+                    $temp,
+                    $temp,
+                    1
+                ];
             }
-        } else {
-            $stations[$city] = [
-                $temp,
-                $temp,
-                $temp,
-                1
-            ];
         }
     }
     return $stations;
