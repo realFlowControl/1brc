@@ -19,12 +19,7 @@ $threads_cnt = (int) $argv[1];
  */
 function get_file_chunks(string $file, int $cpu_count): array {
     $size = filesize($file);
-
-    if ($cpu_count == 1) {
-        $chunk_size = $size;
-    } else {
-        $chunk_size = (int) ($size / $cpu_count);
-    }
+    $chunk_size = (int) ($size / $cpu_count);
 
     $fp = fopen($file, 'rb');
 

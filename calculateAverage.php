@@ -19,12 +19,7 @@ $threads_cnt = (int) $argv[1];
  */
 function get_file_chunks(string $file, int $cpu_count): array {
     $size = filesize($file);
-
-    if ($cpu_count == 1) {
-        $chunk_size = $size;
-    } else {
-        $chunk_size = (int) ($size / $cpu_count);
-    }
+    $chunk_size = (int) ($size / $cpu_count);
 
     $fp = fopen($file, 'rb');
 
@@ -99,8 +94,7 @@ $chunks = get_file_chunks($file, $threads_cnt);
 $futures = [];
 
 for ($i = 0; $i < $threads_cnt; $i++) {
-    $runtime = new \parallel\Runtime();
-    $futures[$i] = $runtime->run(
+    $futures[$i] = \parallel\run(
         $process_chunk,
         [
             $file,
@@ -109,6 +103,7 @@ for ($i = 0; $i < $threads_cnt; $i++) {
         ]
     );
 }
+
 
 $results = [];
 
