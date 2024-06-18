@@ -12,8 +12,7 @@ $threads_cnt = (int) $argv[1];
 
 /**
  * Get the chunks that each thread needs to process with start and end position.
- * These positions are aligned to \n chars because we use `fgets()` to read
- * which itself reads till a \n character.
+ * These positions are aligned to \n chars (full lines).
  *
  * @return array<int, array{0: int, 1: int}>
  */
@@ -118,8 +117,7 @@ for ($i = 0; $i < $threads_cnt; $i++) {
             $result[3] += $measurement[3];
             if ($measurement[0] < $result[0]) {
                 $result[0] = $measurement[0];
-            }
-            if ($measurement[1] < $result[1]) {
+            } elseif ($measurement[1] < $result[1]) {
                 $result[1] = $measurement[1];
             }
         } else {
