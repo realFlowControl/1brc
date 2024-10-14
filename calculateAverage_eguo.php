@@ -128,7 +128,7 @@ for ($i = 0; $i < $threads_cnt; $i++) {
             if ($measurement[0] < $result[0]) {
                 $result[0] = $measurement[0];
             }
-            if ($measurement[1] < $result[1]) {
+            if ($measurement[1] > $result[1]) {
                 $result[1] = $measurement[1];
             }
         } else {
