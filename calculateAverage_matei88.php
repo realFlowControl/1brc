@@ -2,7 +2,7 @@
 
 // Usage example, passing argument from command line
 if ($argc !== 2) {
-    echo "Usage: ", __FILE__, " <number of threads>\n";
+    echo "Usage: ", __FILE__, " <number of processes>\n";
     exit(1);
 }
 
@@ -14,7 +14,7 @@ $sharedMemoryId = shmop_open($sharedMemoryKey, 'c', 0644, (1024 * 1024 * $proces
 $pids = [];
 
 /**
- * Get the chunks that each thread needs to process with start and end position.
+ * Get the chunks that each process needs to process with start and end position.
  * These positions are aligned to \n chars because we use `fgets()` to read
  * which itself reads till a \n character.
  *
@@ -133,7 +133,7 @@ for ($i = 0; $i < $processCount; $i++) {
             if ($min < $result[0]) {
                 $result[0] = $min;
             }
-            if ($max < $result[1]) {
+            if ($max > $result[1]) {
                 $result[1] = $max;
             }
         } else {
